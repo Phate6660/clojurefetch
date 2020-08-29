@@ -8,10 +8,11 @@ Cause why not.
 
 ## output
 
-`$ lein run -- -d -h -k`
+`$ lein run -- -d -h -k -u`
 
 ```
 Distro:    Gentoo
 Hostname:  gentoo
 Kernel:    5.4.52
+User:      valley
 ```
