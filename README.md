@@ -8,7 +8,18 @@ Cause why not.
 
 ## output
 
-`$ lein run -- -d -h -k -u`
+`$ lein run -- help`
+
+```
+d     display distro
+h     display hostname
+k     display kernel
+u     display user
+
+help  display help
+```
+
+`$ lein run -- dhku`
 
 ```
 Distro:    Gentoo

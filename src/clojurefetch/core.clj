@@ -17,11 +17,19 @@
 
 (defn -main [& args]
   (def cargs (apply str args))
-  (if (str/.contains cargs "-d")
+  (if (str/.contains cargs "help")
+    ((println "d     display distro
+h     display hostname
+k     display kernel
+u     display user
+
+help  display help")
+    (System/exit 0)))
+  (if (str/.contains cargs "d")
     (println (str/join["Distro:    ", (Distro)])))
-  (if (str/.contains cargs "-h")
+  (if (str/.contains cargs "h")
     (println (str/join["Hostname:  ", (Hostname)])))
-  (if (str/.contains cargs "-k")
+  (if (str/.contains cargs "k")
     (println (str/join["Kernel:    ", (Kernel)])))
-  (if (str/.contains cargs "-u")
+  (if (str/.contains cargs "u")
     (println (str/join["User:      ", (System/getenv "USER")]))))

@@ -1,8 +1,7 @@
 (defproject clojurefetch "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
-  :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
-            :url "https://www.eclipse.org/legal/epl-2.0/"}
+  :description "I have a problem, ok. I know I do. This is yet another *fetch program, this time in clojure."
+  :url "https://github.com/Phate6660/clojurefetch"
+  :license {:name "Unlicense"}
   :dependencies [[org.clojure/clojure "1.10.0"]]
   :main ^:skip-aot clojurefetch.core
   :target-path "target/%s"
