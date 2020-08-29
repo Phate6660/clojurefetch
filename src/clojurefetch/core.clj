@@ -9,12 +9,6 @@
   (def line_vector (str/split line #"="))
   (str/trim-newline (nth line_vector 1)))
 
-(defn Hostname []
-  (str/trim-newline (slurp "/etc/hostname")))
-
-(defn Kernel []
-  (str/trim-newline (slurp "/proc/sys/kernel/osrelease")))
-
 (defn -main [& args]
   (def cargs (apply str args))
   (if (str/.contains cargs "help")
@@ -28,8 +22,8 @@ help  display help")
   (if (str/.contains cargs "d")
     (println (str/join["Distro:    ", (Distro)])))
   (if (str/.contains cargs "h")
-    (println (str/join["Hostname:  ", (Hostname)])))
+    (println (str/join["Hostname:  ", (str/trim-newline (slurp "/etc/hostname"))])))
   (if (str/.contains cargs "k")
-    (println (str/join["Kernel:    ", (Kernel)])))
+    (println (str/join["Kernel:    ", (str/trim-newline (slurp "/proc/sys/kernel/osrelease"))])))
   (if (str/.contains cargs "u")
     (println (str/join["User:      ", (System/getenv "USER")]))))
