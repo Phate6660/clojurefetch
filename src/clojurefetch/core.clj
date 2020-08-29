@@ -6,7 +6,7 @@
   (def file (slurp "/etc/os-release"))
   (def file_vector (str/split file #"\n"))
   (def line (apply str (nth file_vector 0)))
-  (def line_vector (str/split line #"\="))
+  (def line_vector (str/split line #"="))
   (str/trim-newline (nth line_vector 1)))
 
 (defn Hostname []
