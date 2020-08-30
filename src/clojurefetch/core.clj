@@ -9,6 +9,8 @@
         line_vector (str/split line #"=")]
     (str/trim-newline (second line_vector))))
 
+(def trim-and-slurp (comp str/trim-newline slurp))
+
 (defn -main [& args]
   (def cargs (apply str args))
   (when (str/.contains cargs "help")
@@ -22,8 +24,8 @@ help  display help")
   (if (str/.contains cargs "d")
     (println (str/join["Distro:    ", (Distro)])))
   (if (str/.contains cargs "h")
-    (println (str/join["Hostname:  ", (str/trim-newline (slurp "/etc/hostname"))])))
+    (println (str/join["Hostname:  ", (trim-and-slurp "/etc/hostname")])))
   (if (str/.contains cargs "k")
-    (println (str/join["Kernel:    ", (str/trim-newline (slurp "/proc/sys/kernel/osrelease"))])))
+    (println (str/join["Kernel:    ", (trim-and-slurp "/proc/sys/kernel/osrelease")])))
   (if (str/.contains cargs "u")
     (println (str/join["User:      ", (System/getenv "USER")]))))
