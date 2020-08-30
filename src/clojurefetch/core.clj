@@ -4,10 +4,10 @@
 
 (defn Distro []
   (let [file (slurp "/etc/os-release")
-        file_vector (str/split file #"\n")
-        line (nth file_vector 0)
+        file_vector (str/split-lines file)
+        line (first file_vector)
         line_vector (str/split line #"=")]
-    (str/trim-newline (nth line_vector 1))))
+    (str/trim-newline (second line_vector))))
 
 (defn -main [& args]
   (def cargs (apply str args))
