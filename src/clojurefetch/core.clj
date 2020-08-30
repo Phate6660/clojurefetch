@@ -11,14 +11,14 @@
 
 (defn -main [& args]
   (def cargs (apply str args))
-  (if (str/.contains cargs "help")
-    ((println "d     display distro
+  (when (str/.contains cargs "help")
+    (println "d     display distro
 h     display hostname
 k     display kernel
 u     display user
 
 help  display help")
-    (System/exit 0)))
+    (System/exit 0))
   (if (str/.contains cargs "d")
     (println (str/join["Distro:    ", (Distro)])))
   (if (str/.contains cargs "h")
