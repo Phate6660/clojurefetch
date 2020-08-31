@@ -1,5 +1,6 @@
 (ns clojurefetch.core
-  (:require [clojure.string :as str])
+  (:require [clojure.string :as str]
+            [clojure.java.shell :as shell])
   (:gen-class))
 
 (defn Distro []
@@ -10,6 +11,11 @@
     (str/trim-newline (second line_vector))))
 
 (def trim-and-slurp (comp str/trim-newline slurp))
+
+(defn Portage []
+  (let [list (shell/sh "qlist" "-I")
+        total (count (str/split-lines (str (:out list))))]
+    (str total " (portage)")))
 
 (defn Uptime []
   (let [uptime_raw (str (trim-and-slurp (java.io.FileReader. "/proc/uptime")))
@@ -27,7 +33,9 @@
   (str/trim (str days " " hours " " minutes))))
 
 (defn display-help []
-  (println "D     display device name
+  (println "general fields:
+---------------
+D     display device name
 d     display distro
 e     display editor (requires $EDITOR to be set)
 h     display hostname
@@ -36,7 +44,11 @@ s     display shell
 U     display user
 u     display uptime
 
-help  display help"))
+help  display help
+
+package counts:
+---------------
+p     portage (requires qlist until I can figure out globbing)"))
 
 (defn -main [& args]
   (let [cargs (apply str args)]
@@ -53,6 +65,8 @@ help  display help"))
           (println (str "Hostname:  " (trim-and-slurp "/etc/hostname"))))
         (when (str/includes? cargs "k")
           (println (str "Kernel:    " (trim-and-slurp "/proc/sys/kernel/osrelease"))))
+        (when (str/includes? cargs "p")
+          (println (str "Packages   " (Portage))))
         (when (str/includes? cargs "s")
           (println (str "Shell:     " (System/getenv "SHELL"))))
         (when (str/includes? cargs "U")

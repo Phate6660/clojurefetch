@@ -11,6 +11,8 @@ Cause why not.
 `$ lein run -- help`
 
 ```
+general fields:
+---------------
 D     display device name
 d     display distro
 e     display editor (requires $EDITOR to be set)
@@ -21,9 +23,13 @@ U     display user
 u     display uptime
 
 help  display help
+
+package counts:
+---------------
+p     portage (requires qlist until I can figure out globbing)
 ```
 
-`$ lein run -- DdehksUu`
+`$ lein run -- DdehkpsUu`
 
 ```
 Device:    OptiPlex 7010
@@ -31,7 +37,8 @@ Distro:    Gentoo
 Editor:    /usr/bin/emacsclient
 Hostname:  gentoo
 Kernel:    5.4.52
+Packages   592 (portage)
 Shell:     /bin/bash
 User:      valley
-Uptime:    15h 9m
+Uptime:    16h 23m
 ```
