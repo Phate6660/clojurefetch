@@ -27,7 +27,8 @@
   (str/trim (str days " " hours " " minutes))))
 
 (defn display-help []
-  (println "d     display distro
+  (println "D     display device name
+d     display distro
 h     display hostname
 k     display kernel
 U     display user
@@ -39,7 +40,9 @@ help  display help"))
   (let [cargs (apply str args)]
     (if (str/includes? cargs "help")
       (display-help)
-      (do 
+      (do
+        (when (str/includes? cargs "D")
+          (println (str "Device:    " (trim-and-slurp "/sys/devices/virtual/dmi/id/product_name"))))
         (when (str/includes? cargs "d")
           (println (str "Distro:    " (Distro))))
         (when (str/includes? cargs "h")
