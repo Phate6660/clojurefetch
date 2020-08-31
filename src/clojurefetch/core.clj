@@ -29,8 +29,10 @@
 (defn display-help []
   (println "D     display device name
 d     display distro
+e     display editor (requires $EDITOR to be set)
 h     display hostname
 k     display kernel
+s     display shell
 U     display user
 u     display uptime
 
@@ -45,10 +47,14 @@ help  display help"))
           (println (str "Device:    " (trim-and-slurp "/sys/devices/virtual/dmi/id/product_name"))))
         (when (str/includes? cargs "d")
           (println (str "Distro:    " (Distro))))
+        (when (str/includes? cargs "e")
+          (println (str "Editor:    " (System/getenv "EDITOR"))))
         (when (str/includes? cargs "h")
           (println (str "Hostname:  " (trim-and-slurp "/etc/hostname"))))
         (when (str/includes? cargs "k")
           (println (str "Kernel:    " (trim-and-slurp "/proc/sys/kernel/osrelease"))))
+        (when (str/includes? cargs "s")
+          (println (str "Shell:     " (System/getenv "SHELL"))))
         (when (str/includes? cargs "U")
           (println (str "User:      " (System/getenv "USER"))))
         (when (str/includes? cargs "u")

@@ -13,21 +13,25 @@ Cause why not.
 ```
 D     display device name
 d     display distro
+e     display editor (requires $EDITOR to be set)
 h     display hostname
 k     display kernel
+s     display shell
 U     display user
 u     display uptime
 
 help  display help
 ```
 
-`$ lein run -- DdhkUu`
+`$ lein run -- DdehksUu`
 
 ```
 Device:    OptiPlex 7010
 Distro:    Gentoo
+Editor:    /usr/bin/emacsclient
 Hostname:  gentoo
 Kernel:    5.4.52
+Shell:     /bin/bash
 User:      valley
-Uptime:    15h 5m
+Uptime:    15h 9m
 ```
