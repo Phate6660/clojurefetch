@@ -3,27 +3,32 @@
   (:gen-class))
 
 (defn Distro []
-  (def file (slurp "/etc/os-release"))
-  (def file_vector (str/split file #"\n"))
-  (def line (nth file_vector 0))
-  (def line_vector (str/split line #"="))
-  (str/trim-newline (nth line_vector 1)))
+  (let [file (slurp "/etc/os-release")
+        file_vector (str/split-lines file)
+        line (first file_vector)
+        line_vector (str/split line #"=")]
+    (str/trim-newline (second line_vector))))
 
-(defn -main [& args]
-  (def cargs (apply str args))
-  (if (str/.contains cargs "help")
-    ((println "d     display distro
+(def trim-and-slurp (comp str/trim-newline slurp))
+
+(defn display-help []
+  (println "d     display distro
 h     display hostname
 k     display kernel
 u     display user
 
-help  display help")
-    (System/exit 0)))
-  (if (str/.contains cargs "d")
-    (println (str/join["Distro:    ", (Distro)])))
-  (if (str/.contains cargs "h")
-    (println (str/join["Hostname:  ", (str/trim-newline (slurp "/etc/hostname"))])))
-  (if (str/.contains cargs "k")
-    (println (str/join["Kernel:    ", (str/trim-newline (slurp "/proc/sys/kernel/osrelease"))])))
-  (if (str/.contains cargs "u")
-    (println (str/join["User:      ", (System/getenv "USER")]))))
+help  display help"))
+
+(defn -main [& args]
+  (let [cargs (apply str args)]
+    (if (str/includes? cargs "help")
+      (display-help)
+      (do 
+        (when (str/includes? cargs "d")
+          (println (str "Distro:    " (Distro))))
+        (when (str/includes? cargs "h")
+          (println (str "Hostname:  " (trim-and-slurp "/etc/hostname"))))
+        (when (str/includes? cargs "k")
+          (println (str "Kernel:    " (trim-and-slurp "/proc/sys/kernel/osrelease"))))
+        (when (str/includes? cargs "u")
+          (println (str "User:      " (System/getenv "USER"))))))))
