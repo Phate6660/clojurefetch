@@ -12,6 +12,12 @@
 
 (def trim-and-slurp (comp str/trim-newline slurp))
 
+(def trim-blanks-and-newlines (comp str/trim-newline str/trim))
+
+(defn GPU []
+  (let [model (trim-blanks-and-newlines (nth (str/split (:out (shell/sh "sh" "-c" "lspci | grep -I 'VGA\\|Display\\|3D'")) #":") 2))]
+    (str model)))
+
 (defn Portage []
   (let [list (shell/sh "qlist" "-I")
         total (count (str/split-lines (str (:out list))))]
@@ -38,6 +44,7 @@
 D     display device name
 d     display distro
 e     display editor (requires $EDITOR to be set)
+g     display gpu (requires lspci and grep)
 h     display hostname
 k     display kernel
 s     display shell
@@ -61,6 +68,8 @@ p     portage (requires qlist until I can figure out globbing)"))
           (println (str "Distro:    " (Distro))))
         (when (str/includes? cargs "e")
           (println (str "Editor:    " (System/getenv "EDITOR"))))
+        (when (str/includes? cargs "g")
+          (println (str "GPU:       " (GPU))))
         (when (str/includes? cargs "h")
           (println (str "Hostname:  " (trim-and-slurp "/etc/hostname"))))
         (when (str/includes? cargs "k")
