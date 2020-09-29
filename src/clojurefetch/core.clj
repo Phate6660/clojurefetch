@@ -23,11 +23,14 @@
         total (count (str/split-lines (str (:out list))))]
     (str total " (portage)")))
 
-(defn Uptime []
+(defn read-uptime []
   (let [uptime_raw (str (trim-and-slurp (java.io.FileReader. "/proc/uptime")))
         uptime_vector (str/split uptime_raw #"\.")
-        uptime (Integer. (first uptime_vector))
-        days (if (> uptime 86400)
+        uptime (Integer. (first uptime_vector))]
+    uptime))
+
+(defn uptime->string [uptime]
+  (let [days (if (> uptime 86400)
                (str (int (/ uptime 60 60 24)) "d")
                "")
         hours (if (> uptime 3600)
@@ -81,4 +84,4 @@ p     portage (requires qlist until I can figure out globbing)"))
         (when (str/includes? cargs "U")
           (println (str "User:      " (System/getenv "USER"))))
         (when (str/includes? cargs "u")
-          (println (str "Uptime:    " (Uptime))))))))
+          (println (str "Uptime:    " (uptime->string (read-uptime)))))))))
