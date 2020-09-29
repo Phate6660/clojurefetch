@@ -4,10 +4,11 @@
 
 (deftest uptime-<min-test
   (testing "Uptimes less than 1 minute"
-      (is (= "" (uptime->string 0)))
-      (is (= "" (uptime->string 20)))
-      (is (= "" (uptime->string 45)))
-      (is (= "" (uptime->string 59)))))
+    (let [expected "<1m"]
+      (is (= expected (uptime->string 0)))
+      (is (= expected (uptime->string 20)))
+      (is (= expected (uptime->string 45)))
+      (is (= expected (uptime->string 59))))))
 
 (deftest uptime-min-boundary-test
   (testing "Uptimes on the minute boundary"
