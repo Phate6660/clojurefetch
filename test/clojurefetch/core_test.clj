@@ -31,5 +31,10 @@
     (is (= "3h 45m" (uptime->string 13500)))))
 
 (deftest uptime-day-boundary-test
-  (testing "uptimes on the day boundary"
-    (is (= "1d" (uptime->string 86400)))))
+  (testing "Uptimes on the day boundary"
+    (is (= "1d 0h 0m" (uptime->string 86400)))
+    (is (= "1d 0h 0m" (uptime->string 86401)))
+    (is (= "1d 0h 1m" (uptime->string 86460)))
+    (is (= "1d 4h 0m" (uptime->string 100800)))
+    (is (= "1d 4h 1m" (uptime->string 100860)))
+    (is (= "2d 0h 0m" (uptime->string 172800)))))
