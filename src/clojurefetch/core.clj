@@ -30,13 +30,13 @@
     uptime))
 
 (defn uptime->string [uptime]
-  (let [days (if (> uptime 86400)
+  (let [days (if (>= uptime 86400)
                (str (int (/ uptime 60 60 24)) "d")
                "")
-        hours (if (> uptime 3600)
+        hours (if (>= uptime 3600)
                 (str (int (rem (/ uptime 60 60) 24)) "h")
                 "")
-        minutes (if (> uptime 60)
+        minutes (if (>= uptime 60)
                   (str (int (rem (/ uptime 60) 60)) "m")
                   "")]
   (str/trim (str days " " hours " " minutes))))
