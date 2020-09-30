@@ -23,20 +23,29 @@
         total (count (str/split-lines (str (:out list))))]
     (str total " (portage)")))
 
-(defn Uptime []
-  (let [uptime_raw (str (trim-and-slurp (java.io.FileReader. "/proc/uptime")))
-        uptime_vector (str/split uptime_raw #"\.")
-        uptime (Integer. (first uptime_vector))
-        days (if (> uptime 86400)
-               (str (int (/ uptime 60 60 24)) "d")
-               "")
-        hours (if (> uptime 3600)
-                (str (int (rem (/ uptime 60 60) 24)) "h")
-                "")
-        minutes (if (> uptime 60)
-                  (str (int (rem (/ uptime 60) 60)) "m")
-                  "")]
-  (str/trim (str days " " hours " " minutes))))
+(defn read-uptime []
+  (let [uptime-raw (trim-and-slurp (java.io.FileReader. "/proc/uptime"))
+        ;; /proc/uptime contains two fields separated by a space:
+        ;;   1. The system's uptime represented in seconds
+        ;;   2. The sum of each core's idle time
+        ;; Example: 1994.80 3679.13
+        ;; To calculate the uptime we only want the first value without the fractional part.
+        uptime-string (first (str/split uptime-raw #"\."))]
+    (Integer. uptime-string)))
+
+(defn uptime->string [uptime]
+  (if (< uptime 60)
+    "<1m" ;; Return "<1m" if uptime is under a minute.
+    (let [days (if (>= uptime 86400)
+                 (str (int (/ uptime 60 60 24)) "d ")
+                 "")
+          hours (if (>= uptime 3600)
+                  (str (int (rem (/ uptime 60 60) 24)) "h ")
+                  "")
+          minutes (if (>= uptime 60)
+                    (str (int (rem (/ uptime 60) 60)) "m")
+                    "")]
+      (str days hours minutes))))
 
 (defn display-help []
   (println "general fields:
@@ -81,4 +90,4 @@ p     portage (requires qlist until I can figure out globbing)"))
         (when (str/includes? cargs "U")
           (println (str "User:      " (System/getenv "USER"))))
         (when (str/includes? cargs "u")
-          (println (str "Uptime:    " (Uptime))))))))
+          (println (str "Uptime:    " (uptime->string (read-uptime)))))))))
