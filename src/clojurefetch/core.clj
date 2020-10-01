@@ -11,8 +11,11 @@
     (str/trim-newline (second line_vector))))
 
 (def trim-and-slurp (comp str/trim-newline slurp))
-
 (def trim-blanks-and-newlines (comp str/trim-newline str/trim))
+(defn get-env [s]
+  (let [env (str/upper-case s)]
+    (or (System/getenv env)
+        (format "$%s not set!" env))))
 
 (defn GPU []
   (let [model (trim-blanks-and-newlines (nth (str/split (:out (shell/sh "sh" "-c" "lspci | grep -I 'VGA\\|Display\\|3D'")) #":") 2))]
@@ -76,7 +79,7 @@ p     portage (requires qlist until I can figure out globbing)"))
         (when (str/includes? cargs "d")
           (println (str "Distro:    " (Distro))))
         (when (str/includes? cargs "e")
-          (println (str "Editor:    " (System/getenv "EDITOR"))))
+          (println (str "Editor:    " (get-env "EDITOR"))))
         (when (str/includes? cargs "g")
           (println (str "GPU:       " (GPU))))
         (when (str/includes? cargs "h")
@@ -86,8 +89,8 @@ p     portage (requires qlist until I can figure out globbing)"))
         (when (str/includes? cargs "p")
           (println (str "Packages   " (Portage))))
         (when (str/includes? cargs "s")
-          (println (str "Shell:     " (System/getenv "SHELL"))))
+          (println (str "Shell:     " (get-env "SHELL"))))
         (when (str/includes? cargs "U")
-          (println (str "User:      " (System/getenv "USER"))))
+          (println (str "User:      " (get-env "USER"))))
         (when (str/includes? cargs "u")
           (println (str "Uptime:    " (uptime->string (read-uptime)))))))))
