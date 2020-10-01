@@ -15,7 +15,7 @@
 (defn get-env [s]
   (let [env (str/upper-case s)]
     (or (System/getenv env)
-        (format "$%s not set!" env))))
+        (format "$%s is not set!" env))))
 
 (defn GPU []
   (let [model (trim-blanks-and-newlines (nth (str/split (:out (shell/sh "sh" "-c" "lspci | grep -I 'VGA\\|Display\\|3D'")) #":") 2))]
