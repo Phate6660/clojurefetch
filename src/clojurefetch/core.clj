@@ -36,6 +36,7 @@
   ;; Example: 1994.80 3679.13
   ;; To calculate the uptime we only want the first value without the fractional part.
   (->> "/proc/uptime"
+       ;; FileReader is used as a bug in slurp prevents it from reading from /proc
        java.io.FileReader.
        trim-and-slurp
        (re-find #"^\d+")
