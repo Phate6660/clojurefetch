@@ -4,11 +4,11 @@
   (:gen-class))
 
 (defn Distro []
-  (let [file (slurp "/etc/os-release")
-        file_vector (str/split-lines file)
-        line (first file_vector)
-        line_vector (str/split line #"=")]
-    (str/trim-newline (second line_vector))))
+  (->> "/etc/os-release"
+       slurp
+       (re-find #"PRETTY_NAME=\"([\w ]+)\"")
+       ;; Get capture group
+       last))
 
 (def trim-and-slurp (comp str/trim-newline slurp))
 (def trim-blanks-and-newlines (comp str/trim-newline str/trim))
