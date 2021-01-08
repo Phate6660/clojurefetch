@@ -30,14 +30,16 @@
     (str total " (portage)")))
 
 (defn read-uptime []
-  (let [uptime-raw (trim-and-slurp (java.io.FileReader. "/proc/uptime"))
-        ;; /proc/uptime contains two fields separated by a space:
-        ;;   1. The system's uptime represented in seconds
-        ;;   2. The sum of each core's idle time
-        ;; Example: 1994.80 3679.13
-        ;; To calculate the uptime we only want the first value without the fractional part.
-        uptime-string (first (str/split uptime-raw #"\."))]
-    (Integer. uptime-string)))
+  ;; /proc/uptime contains two fields separated by a space:
+  ;;   1. The system's uptime represented in seconds
+  ;;   2. The sum of each core's idle time
+  ;; Example: 1994.80 3679.13
+  ;; To calculate the uptime we only want the first value without the fractional part.
+  (->> "/proc/uptime"
+       java.io.FileReader.
+       trim-and-slurp
+       (re-find #"^\d+")
+       Integer/parseInt))
 
 (defn uptime->string [uptime]
   (if (< uptime 60)
