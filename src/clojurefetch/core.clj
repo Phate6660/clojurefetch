@@ -4,22 +4,25 @@
   (:gen-class))
 
 (defn Distro []
-  (let [file (slurp "/etc/os-release")
-        file_vector (str/split-lines file)
-        line (first file_vector)
-        line_vector (str/split line #"=")]
-    (str/trim-newline (second line_vector))))
+  (->> "/etc/os-release"
+       slurp
+       (re-find #"PRETTY_NAME=\"([\w ]+)\"")
+       ;; Get capture group
+       last))
 
 (def trim-and-slurp (comp str/trim-newline slurp))
-(def trim-blanks-and-newlines (comp str/trim-newline str/trim))
+
 (defn get-env [s]
   (let [env (str/upper-case s)]
     (or (System/getenv env)
         (format "$%s is not set!" env))))
 
 (defn GPU []
-  (let [model (trim-blanks-and-newlines (nth (str/split (:out (shell/sh "sh" "-c" "lspci | grep -I 'VGA\\|Display\\|3D'")) #":") 2))]
-    (str model)))
+  (->>
+   (shell/sh "sh" "-c" "lspci | grep -I 'VGA\\|Display\\|3D'")
+   :out
+   (re-find #": ([\w ]+)")
+   last))
 
 (defn Portage []
   (let [list (shell/sh "qlist" "-I")
@@ -27,14 +30,17 @@
     (str total " (portage)")))
 
 (defn read-uptime []
-  (let [uptime-raw (trim-and-slurp (java.io.FileReader. "/proc/uptime"))
-        ;; /proc/uptime contains two fields separated by a space:
-        ;;   1. The system's uptime represented in seconds
-        ;;   2. The sum of each core's idle time
-        ;; Example: 1994.80 3679.13
-        ;; To calculate the uptime we only want the first value without the fractional part.
-        uptime-string (first (str/split uptime-raw #"\."))]
-    (Integer. uptime-string)))
+  ;; /proc/uptime contains two fields separated by a space:
+  ;;   1. The system's uptime represented in seconds
+  ;;   2. The sum of each core's idle time
+  ;; Example: 1994.80 3679.13
+  ;; To calculate the uptime we only want the first value without the fractional part.
+  (->> "/proc/uptime"
+       ;; FileReader is used as a bug in slurp prevents it from reading from /proc
+       java.io.FileReader.
+       trim-and-slurp
+       (re-find #"^\d+")
+       Integer/parseInt))
 
 (defn uptime->string [uptime]
   (if (< uptime 60)
@@ -81,7 +87,9 @@ p     portage (requires qlist until I can figure out globbing)"))
         (when (str/includes? cargs "e")
           (println (str "Editor:    " (get-env "EDITOR"))))
         (when (str/includes? cargs "g")
-          (println (str "GPU:       " (GPU))))
+          (println (str "GPU:       " (GPU)))
+          ;; Program will hang without shutdown-agents due to "future" used by the shell call.
+          (shutdown-agents))
         (when (str/includes? cargs "h")
           (println (str "Hostname:  " (trim-and-slurp "/etc/hostname"))))
         (when (str/includes? cargs "k")
