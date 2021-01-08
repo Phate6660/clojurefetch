@@ -18,8 +18,11 @@
         (format "$%s is not set!" env))))
 
 (defn GPU []
-  (let [model (trim-blanks-and-newlines (nth (str/split (:out (shell/sh "sh" "-c" "lspci | grep -I 'VGA\\|Display\\|3D'")) #":") 2))]
-    (str model)))
+  (->>
+   (shell/sh "sh" "-c" "lspci | grep -I 'VGA\\|Display\\|3D'")
+   :out
+   (re-find #": ([\w ]+)")
+   last))
 
 (defn Portage []
   (let [list (shell/sh "qlist" "-I")
