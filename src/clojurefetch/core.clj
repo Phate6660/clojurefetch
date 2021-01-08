@@ -11,7 +11,7 @@
        last))
 
 (def trim-and-slurp (comp str/trim-newline slurp))
-(def trim-blanks-and-newlines (comp str/trim-newline str/trim))
+
 (defn get-env [s]
   (let [env (str/upper-case s)]
     (or (System/getenv env)
